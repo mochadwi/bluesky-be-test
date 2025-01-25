@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 from typing import Dict
-from database import init_db, insert_pokemon
+from pydantic import BaseModel
+from database import init_db, insert_pokemon, get_all_pokemon
 from model import Pokemon
+
+class PokemonCreate(BaseModel):
+    name: str
+    type: str
 
 app = FastAPI(
     title="Pokemon API",
@@ -19,9 +24,9 @@ async def root():
     return {"message": "Hi this is Pokemon API"}
 
 @app.post("/api/pokemon", response_model=Dict)
-async def create_pokemon(name: str, type: str):
+async def create_pokemon(pokemon_data: PokemonCreate):
     """Create a new Pokemon"""
-    pokemon = Pokemon(name=name, type=type)
+    pokemon = Pokemon(name=pokemon_data.name, type=pokemon_data.type)
     pokemon_id = insert_pokemon(pokemon)
     
     return {
@@ -29,8 +34,8 @@ async def create_pokemon(name: str, type: str):
         "data": {
             "id": str(pokemon_id),
             "attributes": {
-                "name": name,
-                "type": type
+                "name": pokemon_data.name,
+                "type": pokemon_data.type
             }
         }
     }
