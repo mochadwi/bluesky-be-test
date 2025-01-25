@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from typing import Dict
-from database import init_db, create_pokemon
+from database import init_db, insert_pokemon
+from model import Pokemon
 
 app = FastAPI(
     title="Pokemon API",
@@ -20,8 +21,16 @@ async def root():
 @app.post("/api/pokemon", response_model=Dict)
 async def create_pokemon(name: str, type: str):
     """Create a new Pokemon"""
-    create_pokemon(name, type)
-    return { 
-        "message': 'Pokemon created successfully,"
-        "data": NULL
+    pokemon = Pokemon(name=name, type=type)
+    pokemon_id = insert_pokemon(pokemon)
+    
+    return {
+        "message": "Pokemon created successfully",
+        "data": {
+            "id": str(pokemon_id),
+            "attributes": {
+                "name": name,
+                "type": type
+            }
+        }
     }

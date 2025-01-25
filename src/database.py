@@ -1,5 +1,6 @@
 import sqlite3
 from contextlib import contextmanager
+from model import Pokemon
 
 DATABASE_URL = "pokemon.db"
 
@@ -23,11 +24,11 @@ def get_db():
     finally:
         conn.close()
 
-def create_pokemon(name: str, type: str):
+def insert_pokemon(pokemon: Pokemon):
     with get_db() as db:
         cursor = db.execute(
             "INSERT INTO pokemon (name, type) VALUES (?, ?)",
-            (name, type)
+            (pokemon.get_name(), pokemon.get_type())
         )
         db.commit()
         return cursor.lastrowid
