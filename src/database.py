@@ -22,3 +22,12 @@ def get_db():
         yield conn
     finally:
         conn.close()
+
+def create_pokemon(name: str, type: str):
+    with get_db() as db:
+        cursor = db.execute(
+            "INSERT INTO pokemon (name, type) VALUES (?, ?)",
+            (name, type)
+        )
+        db.commit()
+        return cursor.lastrowid
