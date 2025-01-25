@@ -34,3 +34,20 @@ async def create_pokemon(name: str, type: str):
             }
         }
     }
+
+@app.get("/api/pokemon", response_model=Dict)
+async def get_pokemon():
+    """Get all Pokemon"""
+    pokemon_list = get_all_pokemon()
+    return {
+        "message": "Pokemon retrieved successfully",
+        "data": [
+            {
+                "id": str(pokemon["id"]),
+                "attributes": {
+                    "name": pokemon["name"],
+                    "type": pokemon["type"]
+                }
+            } for pokemon in pokemon_list
+        ]
+    }

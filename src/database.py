@@ -32,3 +32,8 @@ def insert_pokemon(pokemon: Pokemon):
         )
         db.commit()
         return cursor.lastrowid
+
+def get_all_pokemon():
+    with get_db() as db:
+        cursor = db.execute("SELECT * FROM pokemon")
+        return [dict(row) for row in cursor.fetchall()]
