@@ -39,7 +39,7 @@ class PokemonScraper:
             try:
                 pokemon_obj = Pokemon(
                     name=pokemon["name"],
-                    type="todo fetch type details later"
+                    types=["todo fetch type details later"]
                 )
                 insert_pokemon(pokemon_obj)
                 print(f"Successfully stored {pokemon}")

@@ -51,7 +51,7 @@ async def create_pokemon(pokemon_data: PokemonCreate):
                 }
             )
 
-        pokemon = Pokemon(name=pokemon_data.name, type=pokemon_data.type)
+        pokemon = Pokemon(name=pokemon_data.name, types=[pokemon_data.type])
         pokemon_id = insert_pokemon(pokemon)
         
         return {

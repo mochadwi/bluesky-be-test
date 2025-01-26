@@ -1,10 +1,10 @@
 class Pokemon:
-    def __init__(self, name: str, type: str):
+    def __init__(self, name: str, types: list[str]):
         self.name = name
-        self.type = type
+        self.types = types
 
     def get_name(self) -> str:
         return self.name
 
-    def get_type(self) -> str:
-        return self.type
+    def get_types(self) -> list[str]:
+        return self.types

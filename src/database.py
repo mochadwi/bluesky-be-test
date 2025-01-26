@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from contextlib import contextmanager
 from src.model import Pokemon
@@ -10,7 +11,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS pokemon (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            type TEXT NOT NULL
+            types TEXT NOT NULL
         )
         """)
         db.commit()
@@ -27,8 +28,8 @@ def get_db():
 def insert_pokemon(pokemon: Pokemon):
     with get_db() as db:
         cursor = db.execute(
-            "INSERT INTO pokemon (name, type) VALUES (?, ?)",
-            (pokemon.get_name(), pokemon.get_type())
+            "INSERT INTO pokemon (name, types) VALUES (?, ?)",
+            (pokemon.get_name(), json.dumps(pokemon.get_types()))
         )
         db.commit()
         return cursor.lastrowid
@@ -36,4 +37,12 @@ def insert_pokemon(pokemon: Pokemon):
 def get_all_pokemon():
     with get_db() as db:
         cursor = db.execute("SELECT * FROM pokemon")
-        return [dict(row) for row in cursor.fetchall()]
+        rows = cursor.fetchall()
+        return [{
+            'type': 'pokemon',
+            'id': str(row['id']),
+            'attributes': {
+                'name': row['name'],
+                'types': json.loads(row['types'])
+            }
+        } for row in rows]
