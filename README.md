@@ -73,7 +73,7 @@ This project implements a Pokemon API service that:
    ```bash
    # Clone the repository
    git clone <repository-url>
-   cd bluesky_fullstack_test
+   cd blusky-be-test
 
    # Install dependencies
    poetry install
@@ -132,12 +132,19 @@ This project implements a Pokemon API service that:
    - No authentication/authorization
    - Limited error handling
    - No pagination for large datasets
+   - Scrape API required to be called 1st to populate the database
+   - There's no batch processing for data scraping
+   - The scrape took very long time took around 5mins to respond
+   - The `database.db` included to speed up the API get pokemon, otherwise required to call the `/scrape` API 1st (took around ~5mins)
 
 ## Future Improvements
 
 1. **Features**
    - Add authentication/authorization
    - Implement rate limiting
+   - Implement pagination for large datasets
+   - Implement batch processing for data scraping
+   - Automatically scrape new Pokemon data periodically w/o having to do it manually
    - Add more Pokemon attributes (stats, abilities, etc.)
    - Add CRUD operations for Pokemon
 
