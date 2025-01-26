@@ -7,7 +7,6 @@ DATABASE_URL = "pokemon.db"
 
 def init_db():
     with get_db() as db:
-        # Create Pokemon table
         db.execute("""
         CREATE TABLE IF NOT EXISTS pokemon (
             id INTEGER PRIMARY KEY,
@@ -48,7 +47,7 @@ def insert_pokemon(pokemon: Pokemon):
     with get_db() as db:
         try:
             cursor = db.execute(
-                "INSERT INTO pokemon (id, name) VALUES (?, ?)",
+                "INSERT OR REPLACE INTO pokemon (id, name) VALUES (?, ?)",
                 (pokemon.get_id(), pokemon.get_name())
             )
             pokemon_id = pokemon.get_id()
@@ -77,7 +76,7 @@ def insert_pokemon(pokemon: Pokemon):
             return pokemon_id
         except sqlite3.IntegrityError:
             db.rollback()
-            raise ValueError(f"Pokemon with name {pokemon.get_name()} already exists")
+            raise ValueError(f"Pokemon with name {pokemon.get_name()} with {pokemon.get_id()} already exists")
 
 def get_all_pokemon():
     with get_db() as db:

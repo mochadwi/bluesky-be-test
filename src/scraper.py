@@ -77,6 +77,8 @@ class PokemonScraper:
                         name=pokemon_details["name"],
                         types=pokemon_types
                     )
+                
+                print(f"Will store: {pokemon_obj.__dict__}")
                 insert_pokemon(pokemon_obj)
                 print(f"Successfully stored {pokemon}")
             except Exception as e:

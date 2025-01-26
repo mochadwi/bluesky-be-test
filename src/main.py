@@ -25,7 +25,7 @@ async def startup_event():
 async def root():
     return {"message": "Hi this is Pokemon API"}
 
-@app.post("api/pokemon/scrape")
+@app.post("/api/pokemon/scrape")
 async def scrape_pokemon(limit: int = 100):
     """Trigger Pokemon scraping"""
     scraper = PokemonScraper()
