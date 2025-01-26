@@ -3,6 +3,7 @@ from typing import Dict
 from pydantic import BaseModel
 from src.database import init_db, insert_pokemon, get_all_pokemon
 from src.model import Pokemon
+from src.scraper import PokemonScraper
 from fastapi import HTTPException
 
 class PokemonCreate(BaseModel):
@@ -23,6 +24,16 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {"message": "Hi this is Pokemon API"}
+
+@app.post("api/pokemon/scrape")
+async def scrape_pokemon():
+    """Trigger Pokemon scraping"""
+    scraper = PokemonScraper()
+    try:
+        await scraper.scrape_and_store()
+        return {"message": "Pokemon data scraped successfully"}
+    finally:
+        await scraper.close()
 
 @app.post("/api/pokemon", response_model=Dict)
 async def create_pokemon(pokemon_data: PokemonCreate):
