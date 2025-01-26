@@ -30,16 +30,40 @@ class PokemonScraper:
             print(f"Error fetching Pokemon list: {e}")
             return []
 
+    async def fetch_pokemon_details(self, id: int) -> Dict:
+        """Fetch detailed information of a Pokemon.
+        Args:
+            id (int): ID of the Pokemon
+        Returns:
+            Dict: Detailed information of the Pokemon including types
+        """
+        try:
+            response = await self.client.get(
+                f"{self.base_url}/pokemon/{id}"
+            )
+            response.raise_for_status()
+            data = response.json()
+            return {
+                "name": data["name"],
+                "types": [t["type"]["name"] for t in data["types"]]
+            }
+        except httpx.HTTPError as e:
+            print(f"Error fetching Pokemon details: {e}")
+            return {}
+
     async def scrape_and_store(self, limit: int = 100):
         """Main function to scrape Pokemon data and store in database"""
         pokemon_list = await self.fetch_pokemon_list(limit=limit)
         
         for pokemon in pokemon_list:
             try:
-                pokemon_obj = Pokemon(
-                    name=pokemon["name"],
-                    types=["todo fetch type details later"]
-                )
+                pokemon_id = int(pokemon["url"].split("/")[-2])
+                pokemon_details = await self.fetch_pokemon_details(pokemon_id)
+                if pokemon_details:
+                    pokemon_obj = Pokemon(
+                        name=pokemon_details["name"],
+                        types=pokemon_details["types"]
+                    )
                 insert_pokemon(pokemon_obj)
                 print(f"Successfully stored {pokemon}")
             except Exception as e:
