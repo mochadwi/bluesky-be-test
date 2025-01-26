@@ -1,8 +1,8 @@
 import httpx
 import asyncio
 from typing import Dict, List
-from model import Pokemon
-from database import insert_pokemon
+from src.model import Pokemon
+from src.database import insert_pokemon
 
 class PokemonScraper:
     def __init__(self):

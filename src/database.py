@@ -1,6 +1,6 @@
 import sqlite3
 from contextlib import contextmanager
-from model import Pokemon
+from src.model import Pokemon
 
 DATABASE_URL = "pokemon.db"
 

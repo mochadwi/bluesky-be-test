@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from typing import Dict
 from pydantic import BaseModel
-from database import init_db, insert_pokemon, get_all_pokemon
-from model import Pokemon
+from src.database import init_db, insert_pokemon, get_all_pokemon
+from src.model import Pokemon
 from fastapi import HTTPException
 
 class PokemonCreate(BaseModel):
