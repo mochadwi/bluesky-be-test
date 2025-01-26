@@ -10,14 +10,14 @@ def init_db():
         # Create Pokemon table
         db.execute("""
         CREATE TABLE IF NOT EXISTS pokemon (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             name TEXT NOT NULL UNIQUE
         )
         """)
         
         db.execute("""
         CREATE TABLE IF NOT EXISTS types (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             name TEXT NOT NULL UNIQUE
         )
         """)
@@ -48,17 +48,15 @@ def insert_pokemon(pokemon: Pokemon):
     with get_db() as db:
         try:
             cursor = db.execute(
-                "INSERT INTO pokemon (name) VALUES (?)",
-                (pokemon.get_name())
+                "INSERT INTO pokemon (id, name) VALUES (?, ?)",
+                (pokemon.get_id(), pokemon.get_name())
             )
-            pokemon_id = cursor.lastrowid
+            pokemon_id = pokemon.get_id()
             
-            # Insert or get types and create relationships
-            for i, type_name in enumerate(pokemon.get_types(), 1):
-                # Insert or get type
+            for type_id, type_name, type_slot in enumerate(pokemon.get_types()):
                 db.execute(
-                    "INSERT OR IGNORE INTO types (name) VALUES (?)",
-                    (type_name,)
+                    "INSERT OR IGNORE INTO types (id, name) VALUES (?, ?)",
+                    (type_id, type_name,)
                 )
                 cursor = db.execute(
                     "SELECT id FROM types WHERE name = ?",
@@ -66,10 +64,9 @@ def insert_pokemon(pokemon: Pokemon):
                 )
                 type_id = cursor.fetchone()['id']
                 
-                # Create relationship
                 db.execute(
                     "INSERT INTO pokemon_types (pokemon_id, type_id, slot) VALUES (?, ?, ?)",
-                    (pokemon_id, type_id, i)
+                    (pokemon_id, type_id, type_slot)
                 )
             
             db.commit()

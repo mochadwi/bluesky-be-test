@@ -1,6 +1,6 @@
 import httpx
 from typing import Dict, List
-from src.model import Pokemon
+from src.model import PokemonType, Pokemon
 from src.database import insert_pokemon
 
 class PokemonScraper:
@@ -44,8 +44,13 @@ class PokemonScraper:
             response.raise_for_status()
             data = response.json()
             return {
+                "id": data["id"],
                 "name": data["name"],
-                "types": [t["type"]["name"] for t in data["types"]]
+                "types": [{
+                    "id": t["type"]["url"].split("/")[-2],
+                    "name": t["type"]["name"], 
+                    "slot": t["slot"]
+                } for t in data["types"]]
             }
         except httpx.HTTPError as e:
             print(f"Error fetching Pokemon details: {e}")
@@ -60,9 +65,17 @@ class PokemonScraper:
                 pokemon_id = int(pokemon["url"].split("/")[-2])
                 pokemon_details = await self.fetch_pokemon_details(pokemon_id)
                 if pokemon_details:
+                    pokemon_types = [
+                        PokemonType(
+                            id=type_info["id"],
+                            name=type_info["name"],
+                            slot=type_info["slot"]
+                        ) for type_info in pokemon_details["types"]
+                    ]
                     pokemon_obj = Pokemon(
+                        id=pokemon_details["id"],
                         name=pokemon_details["name"],
-                        types=pokemon_details["types"]
+                        types=pokemon_types
                     )
                 insert_pokemon(pokemon_obj)
                 print(f"Successfully stored {pokemon}")
