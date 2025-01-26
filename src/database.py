@@ -52,17 +52,21 @@ def insert_pokemon(pokemon: Pokemon):
                 (pokemon.get_id(), pokemon.get_name())
             )
             pokemon_id = pokemon.get_id()
+
+            db.execute(
+                "DELETE FROM pokemon_types WHERE pokemon_id = ?",
+                (pokemon_id,)
+            )
             
-            for type_id, type_name, type_slot in enumerate(pokemon.get_types()):
+            for pokemon_type in pokemon.get_types():
+                type_id = pokemon_type.get_id()
+                type_name = pokemon_type.get_name()
+                type_slot = pokemon_type.get_slot()
+
                 db.execute(
-                    "INSERT OR IGNORE INTO types (id, name) VALUES (?, ?)",
+                    "INSERT OR REPLACE INTO types (id, name) VALUES (?, ?)",
                     (type_id, type_name,)
                 )
-                cursor = db.execute(
-                    "SELECT id FROM types WHERE name = ?",
-                    (type_name,)
-                )
-                type_id = cursor.fetchone()['id']
                 
                 db.execute(
                     "INSERT INTO pokemon_types (pokemon_id, type_id, slot) VALUES (?, ?, ?)",
