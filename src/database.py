@@ -89,7 +89,6 @@ def get_all_pokemon():
         """)
         rows = cursor.fetchall()
         return [{
-            'type': 'pokemon',
             'id': str(row['id']),
             'attributes': {
                 'name': row['name'],
