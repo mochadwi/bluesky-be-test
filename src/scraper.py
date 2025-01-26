@@ -31,9 +31,9 @@ class PokemonScraper:
             print(f"Error fetching Pokemon list: {e}")
             return []
 
-    async def scrape_and_store(self):
+    async def scrape_and_store(self, limit: int = 100):
         """Main function to scrape Pokemon data and store in database"""
-        pokemon_list = await self.fetch_pokemon_list()
+        pokemon_list = await self.fetch_pokemon_list(limit=limit)
         
         for pokemon in pokemon_list:
             try:

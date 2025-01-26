@@ -26,11 +26,11 @@ async def root():
     return {"message": "Hi this is Pokemon API"}
 
 @app.post("api/pokemon/scrape")
-async def scrape_pokemon():
+async def scrape_pokemon(limit: int = 100):
     """Trigger Pokemon scraping"""
     scraper = PokemonScraper()
     try:
-        await scraper.scrape_and_store()
+        await scraper.scrape_and_store(limit=limit)
         return {"message": "Pokemon data scraped successfully"}
     finally:
         await scraper.close()
