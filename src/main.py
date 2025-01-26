@@ -3,6 +3,7 @@ from typing import Dict
 from pydantic import BaseModel
 from database import init_db, insert_pokemon, get_all_pokemon
 from model import Pokemon
+from fastapi import HTTPException
 
 class PokemonCreate(BaseModel):
     name: str
@@ -26,19 +27,43 @@ async def root():
 @app.post("/api/pokemon", response_model=Dict)
 async def create_pokemon(pokemon_data: PokemonCreate):
     """Create a new Pokemon"""
-    pokemon = Pokemon(name=pokemon_data.name, type=pokemon_data.type)
-    pokemon_id = insert_pokemon(pokemon)
-    
-    return {
-        "message": "Pokemon created successfully",
-        "data": {
-            "id": str(pokemon_id),
-            "attributes": {
-                "name": pokemon_data.name,
-                "type": pokemon_data.type
+    try:
+        if not pokemon_data.name.strip():
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "errors": [{
+                        "status": "400",
+                        "title": "Validation Error",
+                        "detail": "Pokemon name cannot be empty"
+                    }]
+                }
+            )
+
+        pokemon = Pokemon(name=pokemon_data.name, type=pokemon_data.type)
+        pokemon_id = insert_pokemon(pokemon)
+        
+        return {
+            "message": "Pokemon created successfully",
+            "data": {
+                "id": str(pokemon_id),
+                "attributes": {
+                    "name": pokemon_data.name,
+                    "type": pokemon_data.type
+                }
             }
         }
-    }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "errors": [{
+                    "status": "500",
+                    "title": "Internal Server Error",
+                    "detail": str(e)
+                }]
+            }
+        )
 
 @app.get("/api/pokemon", response_model=Dict)
 async def get_pokemon():
