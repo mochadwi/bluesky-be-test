@@ -1,5 +1,4 @@
 import httpx
-import asyncio
 from typing import Dict, List
 from src.model import Pokemon
 from src.database import insert_pokemon
@@ -49,13 +48,3 @@ class PokemonScraper:
     async def close(self):
         """Close the HTTP client"""
         await self.client.aclose()
-
-async def main():
-    scraper = PokemonScraper()
-    try:
-        await scraper.scrape_and_store()
-    finally:
-        await scraper.close()
-
-if __name__ == "__main__":
-    asyncio.run(main())
