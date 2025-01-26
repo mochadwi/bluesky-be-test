@@ -1,0 +1,78 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2024-01-18T00:00:00.000Z",
+    "__export_source": "insomnia.desktop.app:v8",
+    "resources": [
+        {
+            "_id": "wrk_pokemon",
+            "_type": "workspace",
+            "name": "Pokemon API",
+            "description": "Pokemon API Collection",
+            "scope": "collection"
+        },
+        {
+            "_id": "fld_pokemon_endpoints",
+            "_type": "request_group",
+            "parentId": "wrk_pokemon",
+            "name": "Pokemon Endpoints",
+            "description": "Pokemon API Endpoints",
+            "modified": 1705507200000,
+            "created": 1705507200000
+        },
+        {
+            "_id": "env_base",
+            "_type": "environment",
+            "parentId": "wrk_pokemon",
+            "name": "Base Environment",
+            "data": {
+                "base_url": "http://localhost:8000"
+            }
+        },
+        {
+            "_id": "req_pokemon_root",
+            "parentId": "fld_pokemon_endpoints",
+            "modified": 1705507200000,
+            "created": 1705507200000,
+            "url": "{{ _.base_url }}/",
+            "name": "Root Endpoint",
+            "description": "Basic health check endpoint",
+            "method": "GET",
+            "parameters": [],
+            "headers": [],
+            "_type": "request"
+        },
+        {
+            "_id": "req_pokemon_scrape",
+            "parentId": "fld_pokemon_endpoints",
+            "modified": 1705507200000,
+            "created": 1705507200000,
+            "url": "{{ _.base_url }}/api/pokemon/scrape",
+            "name": "Scrape Pokemon",
+            "description": "Scrape Pokemon data from PokeAPI and store in database",
+            "method": "POST",
+            "parameters": [
+                {
+                    "name": "limit",
+                    "value": "100",
+                    "description": "Maximum number of Pokemon to scrape"
+                }
+            ],
+            "headers": [],
+            "_type": "request"
+        },
+        {
+            "_id": "req_pokemon_list",
+            "parentId": "fld_pokemon_endpoints",
+            "modified": 1705507200000,
+            "created": 1705507200000,
+            "url": "{{ _.base_url }}/api/pokemon",
+            "name": "List Pokemon",
+            "description": "Get all Pokemon with their types",
+            "method": "GET",
+            "parameters": [],
+            "headers": [],
+            "_type": "request"
+        }
+    ]
+}
